@@ -1,5 +1,5 @@
 Name: mysql51
-Version: 5.1.63
+Version: 5.1.65
 Release: 1%{?dist}
 Summary: MySQL client programs and shared libraries
 Group: Applications/Databases
@@ -584,6 +584,9 @@ fi
 %{_mandir}/man1/mysql_client_test.1*
 
 %changelog
+* Sat Oct 20 2012 Andy Thompson <andy@webtatic.com> 5.1.65-1
+- Update to MySQL 5.1.65
+
 * Mon May 07 2012 Andy Thompson <andy@webtatic.com> 5.1.63-1
 - Update to MySQL 5.1.63
 
