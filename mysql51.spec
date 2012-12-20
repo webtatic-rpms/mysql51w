@@ -1,11 +1,11 @@
 Name: mysql51
-Version: 5.1.65
+Version: 5.1.66
 Release: 1%{?dist}
 Summary: MySQL client programs and shared libraries
 Group: Applications/Databases
 URL: http://www.mysql.com
 # exceptions allow client libraries to be linked with most open source SW,
-# not only GPL code.
+# not only GPL code.  See README.mysql-license
 License: GPLv2 with exceptions
 
 # Regression tests take a long time, you can skip 'em with this
@@ -25,6 +25,7 @@ Source3: my.cnf
 Source4: scriptstub.c
 Source5: my_config.h
 Source6: README.mysql-docs
+Source7: README.mysql-license
 Source9: mysql-embedded-check.c
 # Working around perl dependency checking bug in rpm FTTB. Remove later.
 Source999: filter-requires-mysql.sh
@@ -34,11 +35,14 @@ Patch2: mysql-errno.patch
 Patch4: mysql-testing.patch
 Patch5: mysql-install-test.patch
 Patch6: mysql-stack-guard.patch
+Patch7: mysql-disable-test.patch
 Patch8: mysql-setschedparam.patch
 Patch9: mysql-no-docs.patch
+Patch10: mysql-strmov.patch
 Patch12: mysql-cve-2008-7247.patch
 Patch13: mysql-expired-certs.patch
 Patch16: mysql-chain-certs.patch
+Patch17: mysql-cve-2012-5611.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: gperf, perl, readline-devel, openssl-devel
@@ -186,11 +190,14 @@ the MySQL sources.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 %patch12 -p1
 %patch13 -p1
 %patch16 -p1
+%patch17 -p1
 
 # workaround for upstream bug #56342
 rm -f mysql-test/t/ssl_8k_key-master.opt
@@ -366,6 +373,7 @@ echo "%{_libdir}/mysql" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/%{name}-%{_arch}.conf
 
 # copy additional docs into build tree so %%doc will find them
 cp %{SOURCE6} README.mysql-docs
+cp %{SOURCE7} README.mysql-license
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -404,7 +412,7 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc README COPYING
+%doc README COPYING README.mysql-license
 %doc README.mysql-docs
 
 %{_bindir}/msql2mysql
@@ -438,7 +446,7 @@ fi
 
 %files libs
 %defattr(-,root,root)
-%doc COPYING
+%doc COPYING README.mysql-license
 # although the default my.cnf contains only server settings, we put it in the
 # libs package because it can be used for client settings too.
 %config(noreplace) /etc/my.cnf
@@ -561,7 +569,7 @@ fi
 
 %files embedded
 %defattr(-,root,root)
-%doc COPYING
+%doc COPYING README.mysql-license
 %{_libdir}/mysql/libmysqld.so.*
 
 %files embedded-devel
@@ -584,6 +592,9 @@ fi
 %{_mandir}/man1/mysql_client_test.1*
 
 %changelog
+* Thu Dec 20 2012 Andy Thompson <andy@webtatic.com> 5.1.66-1
+- Update to MySQL 5.1.66
+
 * Sat Oct 20 2012 Andy Thompson <andy@webtatic.com> 5.1.65-1
 - Update to MySQL 5.1.65
 
