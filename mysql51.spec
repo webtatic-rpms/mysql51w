@@ -8,6 +8,16 @@ URL: http://www.mysql.com
 # not only GPL code.  See README.mysql-license
 License: GPLv2 with exceptions
 
+# We only support the innodb plugin on Intel architectures, because upstream
+# doesn't test it anywhere else (in particular it's known to crash on s390,
+# as of this writing).  But code it this way to permit manual override.
+%ifarch i386 i686 x86_64
+%{!?innodb_plugin:%global innodb_plugin 1}
+%else
+%{!?innodb_plugin:%global innodb_plugin 0}
+%endif
+
+
 # Regression tests take a long time, you can skip 'em with this
 %{!?runselftest:%global runselftest 0}
 
@@ -252,7 +262,11 @@ export CFLAGS CXXFLAGS
 	--with-big-tables \
 	--with-pic \
 	--with-plugin-innobase \
+%if %innodb_plugin
+	--with-plugin-innodb_plugin \
+%else
 	--without-plugin-innodb_plugin \
+%endif
 	--with-plugin-partition \
 	--enable-local-infile \
 	--enable-largefile \
@@ -594,6 +608,7 @@ fi
 %changelog
 * Thu Dec 20 2012 Andy Thompson <andy@webtatic.com> 5.1.66-1
 - Update to MySQL 5.1.66
+- Enable innodb_plugin compilation, disabled by default
 
 * Sat Oct 20 2012 Andy Thompson <andy@webtatic.com> 5.1.65-1
 - Update to MySQL 5.1.65
