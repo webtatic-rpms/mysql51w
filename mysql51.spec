@@ -1,8 +1,8 @@
-%global basever 5.6
+%global basever 5.1
 
 Name: mysql51
 Version: 5.1.66
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: MySQL client programs and shared libraries
 Group: Applications/Databases
 URL: http://www.mysql.com
@@ -65,6 +65,8 @@ BuildRequires: time procps
 # Socket is needed to run regression tests
 BuildRequires: perl(Socket)
 
+Requires: libmysqlclient15
+
 Requires: grep, fileutils
 Requires: %{name}-libs = %{version}-%{release}
 Requires: bash
@@ -111,7 +113,7 @@ Requires(preun): chkconfig
 Requires(preun): initscripts
 Requires(postun): initscripts
 # mysqlhotcopy needs DBI/DBD support
-Requires: perl-DBI, perl-DBD-MySQL, libmysqlclient15
+Requires: perl-DBI, perl-DBD-MySQL
 Conflicts: MySQL-server
 Conflicts: mysql-server < %{basever}
 Provides: mysql-server = %{version}-%{release}
@@ -606,7 +608,7 @@ fi
 %{_mandir}/man1/mysql_client_test.1*
 
 %changelog
-* Thu Dec 20 2012 Andy Thompson <andy@webtatic.com> 5.1.66-1
+* Thu Dec 20 2012 Andy Thompson <andy@webtatic.com> 5.1.66-2
 - Update to MySQL 5.1.66
 - Enable innodb_plugin compilation, disabled by default
 
