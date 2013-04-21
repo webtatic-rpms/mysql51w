@@ -1,8 +1,8 @@
 %global basever 5.1
 
 Name: mysql51
-Version: 5.1.66
-Release: 2%{?dist}
+Version: 5.1.67
+Release: 1%{?dist}
 Summary: MySQL client programs and shared libraries
 Group: Applications/Databases
 URL: http://www.mysql.com
@@ -608,6 +608,9 @@ fi
 %{_mandir}/man1/mysql_client_test.1*
 
 %changelog
+* Sun Apr 21 2013 Andy Thompson <andy@webtatic.com> 5.1.67-1
+- Update to MySQL 5.1.67
+
 * Thu Dec 20 2012 Andy Thompson <andy@webtatic.com> 5.1.66-2
 - Update to MySQL 5.1.66
 - Enable innodb_plugin compilation, disabled by default
