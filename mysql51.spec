@@ -610,6 +610,11 @@ fi
 %{_mandir}/man1/mysql_client_test.1*
 
 %changelog
+* Mon May 27 2013 Andy Thompson <andy@webtatic.com> 5.1.69-1
+- Update to MySQL 5.1.69
+- Move libmysqlclient dependency to mysql55-libs
+- Add patch for bug #68999
+
 * Sun Apr 21 2013 Andy Thompson <andy@webtatic.com> 5.1.67-1
 - Update to MySQL 5.1.67
 
