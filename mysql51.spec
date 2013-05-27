@@ -1,7 +1,7 @@
 %global basever 5.1
 
 Name: mysql51
-Version: 5.1.67
+Version: 5.1.69
 Release: 1%{?dist}
 Summary: MySQL client programs and shared libraries
 Group: Applications/Databases
