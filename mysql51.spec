@@ -65,8 +65,6 @@ BuildRequires: time procps
 # Socket is needed to run regression tests
 BuildRequires: perl(Socket)
 
-Requires: libmysqlclient15
-
 Requires: grep, fileutils
 Requires: %{name}-libs = %{version}-%{release}
 Requires: bash
@@ -91,6 +89,7 @@ contains the standard MySQL client programs and generic MySQL files.
 Summary: The shared libraries required for MySQL clients
 Group: Applications/Databases
 Requires: /sbin/ldconfig
+Requires: libmysqlclient15
 Conflicts: mysql-libs < %{basever}
 Provides: mysql-libs = %{version}-%{release}
 
@@ -105,6 +104,7 @@ MySQL server.
 Summary: The MySQL server and related files
 Group: Applications/Databases
 Requires: %{name} = %{version}-%{release}
+Requires: %{name}-libs = %{version}-%{release}
 Requires: sh-utils
 Requires(pre): /usr/sbin/useradd
 Requires(post): chkconfig
