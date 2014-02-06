@@ -1,6 +1,6 @@
 %global basever 5.1
 
-Name: mysql51
+Name: mysql51w
 Version: 5.1.69
 Release: 1%{?dist}
 Summary: MySQL client programs and shared libraries
@@ -76,6 +76,12 @@ Conflicts: MySQL
 Conflicts: mysql < %{basever}
 Provides: mysql = %{version}-%{release}
 
+%define mysql51_obsoletes() %{expand:
+Obsoletes: mysql51%{?1:-%1} = 5.1.67-1%%{?dist}
+Obsoletes: mysql51%{?1:-%1} = 5.1.69-1%%{?dist}
+}
+%mysql51_obsoletes
+
 # Working around perl dependency checking bug in rpm FTTB. Remove later.
 %global __perl_requires %{SOURCE999}
 
@@ -93,6 +99,7 @@ Requires: /sbin/ldconfig
 Requires: libmysqlclient15
 Conflicts: mysql-libs < %{basever}
 Provides: mysql-libs = %{version}-%{release}
+%mysql51_obsoletes libs
 
 %description libs
 The mysql-libs package provides the essential shared libraries for any 
@@ -118,6 +125,7 @@ Requires: perl-DBI, perl-DBD-MySQL
 Conflicts: MySQL-server
 Conflicts: mysql-server < %{basever}
 Provides: mysql-server = %{version}-%{release}
+%mysql51_obsoletes server
 
 %description server
 MySQL is a multi-user, multi-threaded SQL database server. MySQL is a
@@ -134,6 +142,7 @@ Requires: openssl-devel
 Conflicts: MySQL-devel
 Conflicts: mysql-devel < %{basever}
 Provides: mysql-devel = %{version}-%{release}
+%mysql51_obsoletes devel
 
 %description devel
 MySQL is a multi-user, multi-threaded SQL database server. This
@@ -146,6 +155,7 @@ Summary: MySQL as an embeddable library
 Group: Applications/Databases
 Conflicts: mysql-embedded < %{basever}
 Provides: mysql-embedded = %{version}-%{release}
+%mysql51_obsoletes embedded
 
 %description embedded
 MySQL is a multi-user, multi-threaded SQL database server. This
@@ -160,6 +170,7 @@ Requires: %{name}-embedded = %{version}-%{release}
 Requires: %{name}-devel = %{version}-%{release}
 Conflicts: mysql-embedded-devel < %{basever}
 Provides: mysql-embedded-devel = %{version}-%{release}
+%mysql51_obsoletes embedded-devel
 
 %description embedded-devel
 MySQL is a multi-user, multi-threaded SQL database server. This
@@ -174,6 +185,7 @@ Requires: %{name} = %{version}-%{release}
 Conflicts: MySQL-bench
 Conflicts: mysql-bench < %{basever}
 Provides: mysql-bench = %{version}-%{release}
+%mysql51_obsoletes bench
 
 %description bench
 MySQL is a multi-user, multi-threaded SQL database server. This
@@ -189,6 +201,7 @@ Requires: %{name}-server = %{version}-%{release}
 Conflicts: MySQL-test
 Conflicts: mysql-test < %{basever}
 Provides: mysql-test = %{version}-%{release}
+%mysql51_obsoletes test
 
 %description test
 MySQL is a multi-user, multi-threaded SQL database server. This
@@ -425,6 +438,20 @@ fi
 %postun server
 if [ $1 -ge 1 ]; then
     /sbin/service mysqld condrestart >/dev/null 2>&1 || :
+fi
+
+%triggerun server -- mysql51-server
+[ $2 = 0 ] || exit 0
+# record the current status of mysqld to decide whether to start it later
+if /sbin/service mysqld status >/dev/null 2>&1 ; then
+  touch %{_localstatedir}/lib/mysql/mysqld_replace_restart_needed
+fi
+
+%triggerpostun server -- mysql51-server
+if [ -e %{_localstatedir}/lib/mysql/mysqld_replace_restart_needed ]; then
+  rm %{_localstatedir}/lib/mysql/mysqld_replace_restart_needed
+  # mysqld was running before the mysql51-server package was removed, so start it again
+  /sbin/service mysqld start >/dev/null 2>&1 || :
 fi
 
 
