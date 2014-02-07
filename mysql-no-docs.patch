@@ -1,13 +1,12 @@
 Remove makefile logic dealing with mysql.info.  We cannot ship that
 documentation since it is not freely redistributable.
 
-
-diff -Naur mysql-5.1.44.orig/Docs/Makefile.am mysql-5.1.44/Docs/Makefile.am
---- mysql-5.1.44.orig/Docs/Makefile.am	2010-02-04 06:36:50.000000000 -0500
-+++ mysql-5.1.44/Docs/Makefile.am	2010-02-20 17:23:04.000000000 -0500
-@@ -13,28 +13,21 @@
+diff -Naur mysql-5.1.73-no-docs/Docs/Makefile.am mysql-5.1.73/Docs/Makefile.am
+--- mysql-5.1.73-no-docs/Docs/Makefile.am	2014-02-07 18:06:04.098602906 +0100
++++ mysql-5.1.73/Docs/Makefile.am	2014-02-07 18:09:02.460742206 +0100
+@@ -13,28 +13,22 @@
  # along with this program; if not, write to the Free Software
- # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
  
 -EXTRA_DIST =		mysql.info INSTALL-BINARY @extra_docs@
 +EXTRA_DIST =		INSTALL-BINARY @extra_docs@
@@ -22,7 +21,7 @@ diff -Naur mysql-5.1.44.orig/Docs/Makefile.am mysql-5.1.44/Docs/Makefile.am
 -	  $(INSTALL_DATA) $(srcdir)/mysql.info $(DESTDIR)$(prefix)/docs ; \
  	  test ! -f $(top_srcdir)/ChangeLog || $(INSTALL_DATA) $(top_srcdir)/ChangeLog $(DESTDIR)$(prefix)/docs ; \
  	else \
--	  $(mkinstalldirs) $(DESTDIR)$(infodir) $(DESTDIR)$(pkgdatadir) ; \
+ 	  $(mkinstalldirs) $(DESTDIR)$(infodir) $(DESTDIR)$(pkgdatadir) ; \
 -	  $(INSTALL_DATA) $(srcdir)/mysql.info $(DESTDIR)$(infodir) ; \
 +	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir) ; \
  	  test ! -f $(top_srcdir)/ChangeLog || $(INSTALL_DATA) $(top_srcdir)/ChangeLog $(DESTDIR)$(pkgdatadir) ; \
