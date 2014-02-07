@@ -1,7 +1,7 @@
 %global basever 5.1
 
 Name: mysql51w
-Version: 5.1.69
+Version: 5.1.73
 Release: 1%{?dist}
 Summary: MySQL client programs and shared libraries
 Group: Applications/Databases
@@ -637,6 +637,11 @@ fi
 %{_mandir}/man1/mysql_client_test.1*
 
 %changelog
+* Fri Feb 07 2014 Andy Thompson <andy@webtatic.com> 5.1.73-1
+- Update to MySQL 5.1.73
+- Rename package to mysql51w to avoid conflicting with mysql51 scl packages
+- Update no-docs patch to contain new address to avoid patching errors.
+
 * Mon May 27 2013 Andy Thompson <andy@webtatic.com> 5.1.69-1
 - Update to MySQL 5.1.69
 - Move libmysqlclient dependency to mysql55-libs
