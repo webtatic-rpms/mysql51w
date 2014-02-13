@@ -2,7 +2,7 @@
 
 Name: mysql51w
 Version: 5.1.73
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: MySQL client programs and shared libraries
 Group: Applications/Databases
 URL: http://www.mysql.com
@@ -446,8 +446,16 @@ fi
 if /sbin/service mysqld status >/dev/null 2>&1 ; then
   touch %{_localstatedir}/lib/mysql/mysqld_replace_restart_needed
 fi
+# record the current runlevel positions of mysqld SysV script
+find -L /etc/rc.d/rc[0-6].d -samefile /etc/rc.d/init.d/mysqld  > %{_localstatedir}/lib/mysql/mysqld_replace_runlevels
 
 %triggerpostun server -- mysql51-server
+if [ -e %{_localstatedir}/lib/mysql/mysqld_replace_runlevels ]; then
+  # restore the original runlevel positions of the mysqld SysV script
+  cat %{_localstatedir}/lib/mysql/mysqld_replace_runlevels | xargs -I {} ln -s ../init.d/mysqld {}
+  rm %{_localstatedir}/lib/mysql/mysqld_replace_runlevels
+fi
+
 if [ -e %{_localstatedir}/lib/mysql/mysqld_replace_restart_needed ]; then
   rm %{_localstatedir}/lib/mysql/mysqld_replace_restart_needed
   # mysqld was running before the mysql51-server package was removed, so start it again
@@ -637,6 +645,9 @@ fi
 %{_mandir}/man1/mysql_client_test.1*
 
 %changelog
+* Thu Feb 13 2014 Andy Thompson <andy@webtatic.com> 5.1.73-2
+- Preserve the SysV init script runlevel positions on mysql51->mysql51w upgrade
+
 * Fri Feb 07 2014 Andy Thompson <andy@webtatic.com> 5.1.73-1
 - Update to MySQL 5.1.73
 - Rename package to mysql51w to avoid conflicting with mysql51 scl packages
